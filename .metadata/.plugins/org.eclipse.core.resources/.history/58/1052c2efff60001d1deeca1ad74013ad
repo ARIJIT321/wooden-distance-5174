@@ -1,0 +1,5 @@
+package com.Arijit.exception;
+
+public class BuyerException {
+
+}
