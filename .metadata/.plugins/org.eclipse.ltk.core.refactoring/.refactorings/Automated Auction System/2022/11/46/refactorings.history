@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete element from project &apos;Automated Auction System&apos;&#x0D;&#x0A;- Original project: &apos;Automated Auction System&apos;&#x0D;&#x0A;- Original element: &apos;Automated Auction System/src/com.Arijit.Dao&apos;" description="Delete element" element1="/src&lt;com.Arijit.Dao" elements="1" flags="589830" id="org.eclipse.jdt.ui.delete" resources="0" stamp="1668088058363" subPackages="false" version="1.0"/>
+</session>
