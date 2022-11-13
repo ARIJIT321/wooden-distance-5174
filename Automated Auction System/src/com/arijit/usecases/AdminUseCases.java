@@ -4,13 +4,13 @@ import java.util.Scanner;
 
 
 import com.arijit.bean.Admin;
-import com.arijit.daoImp.Administrator;
+import com.arijit.daoImp.AdminDaoImpl;
 
-public class AdminAccess {
+public class AdminUseCases {
 	
 	static Scanner sc = new Scanner(System.in);
 	private static Admin user;
-	private static Administrator object;
+	private static AdminDaoImpl object;
 	
 	public static void run() {
 			
@@ -49,7 +49,7 @@ public class AdminAccess {
 				
 				System.out.println("***********************");
 				
-				object = new Administrator();
+				object = new AdminDaoImpl();
 				
 				
 				user = object.adminLogIn(username, password);
@@ -151,7 +151,7 @@ public class AdminAccess {
 					System.out.println("Product Price    : " + s.getPrice());
 					System.out.println("Product Category : " + s.getCategory());
 					System.out.println("Product Quantity : " + s.getQuantity());
-					System.out.println("Product Status   : " + s.getStatus());	
+					System.out.println("Product Status   : " + s.isStatus());	
 					
 					System.out.println("*************************");
 				});

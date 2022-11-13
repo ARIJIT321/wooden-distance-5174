@@ -3,7 +3,6 @@ package com.arijit.bean;
 public class Admin {
 	
 	private int id;
-	private boolean login;
 	private String name;
 	private String username;
 	private String password;
@@ -15,24 +14,13 @@ public class Admin {
 	}
 	
 	
-	public Admin(boolean log, int id, String name, String username, String password) {
+	public Admin( int id, String name, String username, String password) {
 		super();
-		this.login = log;
 		this.id = id;
 		this.name = name;
 		this.username = username;
 		this.password = password;
 	}
-
-	public boolean isLogin() {
-		return login;
-	}
-
-
-	public void setLogin(boolean login) {
-		this.login = login;
-	}
-
 
 	public int getId() {
 		return id;

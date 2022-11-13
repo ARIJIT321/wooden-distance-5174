@@ -1,17 +1,15 @@
 package com.arijit.usecases;
 
 import java.util.Scanner;
-
-
 import com.arijit.bean.Buyer;
-import com.arijit.daoImp.UserBuyer;
+import com.arijit.daoImp.BuyerDaoImpl;
 
-public class BuyerAccess {
+public class BuyerUseCases {
 	
 	
 	static Scanner sc = new Scanner(System.in);
 	private static Buyer user;
-	private static UserBuyer object;
+	private static BuyerDaoImpl object;
 	
 	public static void run() {
 		
@@ -55,7 +53,7 @@ public class BuyerAccess {
 				
 				String password = sc.nextLine();
 				
-				object = new UserBuyer();
+				object = new BuyerDaoImpl();
 				
 				Buyer b1 = new Buyer();
 				b1.setName(name);
@@ -83,7 +81,7 @@ public class BuyerAccess {
 				
 				System.out.println("***********************");
 				
-				object = new UserBuyer();
+				object = new BuyerDaoImpl();
 				
 				
 				user = object.loginAsBuyer(username, password);
@@ -189,7 +187,7 @@ public class BuyerAccess {
 				
 				System.out.println("***********************");
 				
-				object = new UserBuyer();
+				object = new BuyerDaoImpl();
 				
 				
 				user = object.loginAsBuyer(username, password);
@@ -232,7 +230,7 @@ public class BuyerAccess {
 						System.out.println("Product Price    : " + s.getPrice());
 						System.out.println("Product Category : " + s.getCategory());
 						System.out.println("Product Quantity : " + s.getQuantity());
-						System.out.println("Product Status   : " + s.getStatus());	
+						System.out.println("Product Status   : " + s.isStatus());	
 						
 						System.out.println("***********************");
 					});				

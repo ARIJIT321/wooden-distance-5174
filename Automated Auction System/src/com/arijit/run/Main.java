@@ -2,9 +2,9 @@ package com.arijit.run;
 
 import java.util.Scanner;
 
-import com.arijit.usecases.AdminAccess;
-import com.arijit.usecases.BuyerAccess;
-import com.arijit.usecases.SellerAccess;
+import com.arijit.usecases.AdminUseCases;
+import com.arijit.usecases.BuyerUseCases;
+import com.arijit.usecases.SellerUseCases;
 
 public class Main {
 	
@@ -52,19 +52,19 @@ public class Main {
 		switch (input) {
 			case 1 : {
 				
-				AdminAccess.run();
+				AdminUseCases.run();
 			}
 			break;
 			
 			case 2 : {
 				
-				BuyerAccess.run();
+				BuyerUseCases.run();
 			}
 			break;
 			
 			case 3 : {
 				
-				SellerAccess.run();
+				SellerUseCases.run();
 			}
 			break;
 			

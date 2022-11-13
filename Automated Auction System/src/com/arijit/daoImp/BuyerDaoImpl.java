@@ -18,7 +18,7 @@ import com.arijit.exception.BuyerException;
 import com.arijit.exception.ProductException;
 import com.arijit.utility.DBUtil;
 
-public class UserBuyer implements BuyerDao{
+public class BuyerDaoImpl implements BuyerDao{
 
 	private Buyer buyer;
 	Scanner sc = new Scanner(System.in);
@@ -31,7 +31,7 @@ public class UserBuyer implements BuyerDao{
 		try(Connection conn = DBUtil.provideConnection()) {
 			
 			
-			PreparedStatement state = conn.prepareStatement("insert into buyers(buyer_name , buyer_username , buyer_password) values (? , ? , ?)");
+			PreparedStatement state = conn.prepareStatement("insert into buyers(buyerName , buyerUsername , buyerPassword) values (? , ? , ?)");
 			
 			state.setString(1, user.getName());
 			state.setString(2, user.getUsername());
@@ -69,7 +69,7 @@ public class UserBuyer implements BuyerDao{
 		
 		try(Connection conn = DBUtil.provideConnection()){
 			
-			PreparedStatement state = conn.prepareStatement("select * from buyers where buyer_username = ? AND buyer_password = ?");
+			PreparedStatement state = conn.prepareStatement("select * from buyers where buyerUsername = ? AND buyerPassword = ?");
 			
 			state.setString(1, username);
 			state.setString(2, password);
@@ -79,10 +79,10 @@ public class UserBuyer implements BuyerDao{
 			if(res.next()) {
 				user = new Buyer();
 				
-				user.setId(res.getInt("buyer_id"));
-				user.setName(res.getString("buyer_name"));
-				user.setUsername(res.getString("buyer_username"));
-				user.setPassword(res.getString("buyer_password"));
+				user.setId(res.getInt("ProId"));
+				user.setName(res.getString("buyerName"));
+				user.setUsername(res.getString("buyerUsername"));
+				user.setPassword(res.getString("buyerPassword"));
 				
 				buyer = user;
 				
@@ -115,7 +115,7 @@ public class UserBuyer implements BuyerDao{
 		try(Connection conn = DBUtil.provideConnection()) {
 			
 			
-		    PreparedStatement state = conn.prepareStatement("select * from products where category = ?");
+		    PreparedStatement state = conn.prepareStatement("select * from product where category = ?");
 			state.setString(1, cate);
 			
 			ResultSet res = state.executeQuery();
@@ -123,23 +123,17 @@ public class UserBuyer implements BuyerDao{
 			while(res.next()) {
 				
 				
-				int i = res.getInt("product_id");
-				String n = res.getString("product_name");
-				int p = res.getInt("base_price");
+				int i = res.getInt("ProId");
+				String n = res.getString("proName");
+				int si = res.getInt("sellerId");
+				int p = res.getInt("price");
 				int q = res.getInt("quantity");
-				String s = res.getString("status");
+				Boolean s = res.getBoolean("status");
 				String c = res.getString("category");
 				
 				
-				String s1 = "Sold";
 				
-				if(s.equalsIgnoreCase("N")) {
-					
-					s1 = "Available";
-				}
-				
-				
-				products.add(new Product(i, p, q , n, s1, c));
+				products.add(new Product(i,n,si,p, q ,s, c));
 				
 			}
 			
@@ -163,7 +157,7 @@ public class UserBuyer implements BuyerDao{
 	}
 
 	@Override
-	public void buyProduct(int product_id)  {
+	public void buyProduct(int ProId)  {
 		
 		try {
 			
@@ -180,6 +174,8 @@ public class UserBuyer implements BuyerDao{
 		
 		try(Connection conn = DBUtil.provideConnection()){
 			
+			
+			
 			Scanner sc = new Scanner(System.in);
 				
 				System.out.println("Enter quanity: ");
@@ -187,9 +183,9 @@ public class UserBuyer implements BuyerDao{
 				int qun = sc.nextInt();
 				sc.nextLine();
 				
-				PreparedStatement state	= conn.prepareStatement("select * from products where product_id = ?");
+				PreparedStatement state	= conn.prepareStatement("select * from products where ProId = ?");
 				
-				state.setInt(1, product_id);
+				state.setInt(1, ProId);
 				
 				
 				ResultSet res = state.executeQuery();
@@ -204,7 +200,7 @@ public class UserBuyer implements BuyerDao{
 					}
 					else {
 						
-						System.out.println("Amount to be paid : " + res.getInt("base_price") * qun);
+						System.out.println("Amount to be paid : " + res.getInt("price") * qun);
 						
 						if(payment()) {
 							
@@ -218,46 +214,39 @@ public class UserBuyer implements BuyerDao{
 						if(quantity == qun) {
 							
 							
-							PreparedStatement getId = conn.prepareStatement("select * from products where product_id = ?");
-							getId.setInt(1, product_id);
+							PreparedStatement getId = conn.prepareStatement("select * from product where ProId = ?");
+							getId.setInt(1, ProId);
 							
 							ResultSet res1 = getId.executeQuery();
 							
 							if(res1.next()) {
 								
-								 int id = res1.getInt("seller_id");
+								 int sid = res1.getInt("sellerId");
+								 int bid = this.buyer.getId();
 								 
-								 PreparedStatement insertIntoSales = conn.prepareStatement("insert into dailysales values(? , ? , ?)");
+								 PreparedStatement insertIntoSales = conn.prepareStatement("insert into SoldProduct(buyerId,sellerId,proName,price,quantity,category,date,) values(? , ? , ?,?,?,?,?)");
 									
-									
-								insertIntoSales.setInt(1, id);
 								
-								LocalDate date = LocalDate.now();
-								
+								 
+								insertIntoSales.setInt(1, bid);
+								insertIntoSales.setInt(2, sid);
+								insertIntoSales.setString(3, res.getString("proName"));
+								insertIntoSales.setInt(4, (res.getInt("base_price") * qun));								LocalDate date = LocalDate.now();
+								insertIntoSales.setInt(5,  qun);
+								insertIntoSales.setString(6, res.getString("category"));
 								insertIntoSales.setDate(2, Date.valueOf(date));
-								insertIntoSales.setInt(3, (res.getInt("base_price") * qun));
 								
 								insertIntoSales.executeUpdate();
 								
 								
-								PreparedStatement update = conn.prepareStatement("update products set status = 'Y', quantity = 0S where product_id = ? AND quantity = ?");
+								PreparedStatement update = conn.prepareStatement("update product set status = true, quantity = 0 where product_id = ? AND quantity = ?");
 								
 								
-								update.setInt(1, product_id);
+								update.setInt(1, ProId);
 								update.setInt(2, qun);
 								int n = update.executeUpdate();
 								
-								PreparedStatement set =  conn.prepareStatement("insert into product_sold values (? , ? , ? , ? , ? , ?)");
-								
-								set.setInt(1, product_id);
-								set.setString(2, res1.getString("product_name"));
-								set.setInt(3, res1.getInt("base_price"));
-								set.setInt(4, qun);
-								set.setInt(5, id);
-								set.setString(6 , res1.getString("category"));
-								
-								
-								set.executeUpdate();
+				
 								
 								if(n > 0) {
 									
@@ -273,48 +262,38 @@ public class UserBuyer implements BuyerDao{
 							
 							
 							PreparedStatement getId = conn.prepareStatement("select * from products where product_id = ?");
-							getId.setInt(1, product_id);
+							getId.setInt(1, ProId);
 							
 							ResultSet s = getId.executeQuery();
 							
 							if(s.next()) {
-							
-								int id = s.getInt("seller_id");
+								int sid = s.getInt("sellerId");
+								 int bid = this.buyer.getId();
+								 
+								 PreparedStatement insertIntoSales = conn.prepareStatement("insert into SoldProduct(buyerId,sellerId,proName,price,quantity,category,date,) values(? , ? , ?,?,?,?,?)");
+									
 								
-								PreparedStatement insertIntoSales = conn.prepareStatement("insert into dailysales values( ? , ? , ?)");
-								
-								insertIntoSales.setInt(1, id);
-								
-								
-								
-								LocalDate date = LocalDate.now();
-								
+								 
+								insertIntoSales.setInt(1, bid);
+								insertIntoSales.setInt(2, sid);
+								insertIntoSales.setString(3, res.getString("proName"));
+								insertIntoSales.setInt(4, (res.getInt("base_price") * qun));								LocalDate date = LocalDate.now();
+								insertIntoSales.setInt(5,  qun);
+								insertIntoSales.setString(6, res.getString("category"));
 								insertIntoSales.setDate(2, Date.valueOf(date));
-								insertIntoSales.setInt(3, (res.getInt("base_price") * qun));
 								
 								insertIntoSales.executeUpdate();
 								
 								
 								
-								PreparedStatement update = conn.prepareStatement("update products set quantity = quantity - ? where product_id = ?");
+								PreparedStatement update = conn.prepareStatement("update product set quantity = quantity - ? where ProId = ?");
 								
 								update.setInt(1, qun); 
-								update.setInt(2, product_id);
+								update.setInt(2, ProId);
 								
 								int n = update.executeUpdate();
 								
-								PreparedStatement set =  conn.prepareStatement("insert into product_sold values (? , ? , ? , ? , ?,?)");
-								
-								set.setInt(1, product_id);
-								set.setString(2, s.getString("product_name"));
-								set.setInt(3, s.getInt("base_price"));
-								set.setInt(4, qun);
-								set.setInt(5, id);	
-								set.setString(6 , s.getString("category"));
-								
-								
-								set.executeUpdate();
-								
+	
 								if(n > 0 ) {
 									
 									System.out.println("Order placed!");
@@ -366,7 +345,7 @@ public class UserBuyer implements BuyerDao{
 				
 				flag = true;
 				
-				buyers.add(new Buyer(res.getInt("buyer_id"), res.getString("buyer_name"), res.getString("buyer_username"), res.getString("buyer_password")));
+				buyers.add(new Buyer(res.getInt("buyerId"), res.getString("buyerName"), res.getString("buyerUsername"), res.getString("buyerPassword")));
 				
 			}
 			

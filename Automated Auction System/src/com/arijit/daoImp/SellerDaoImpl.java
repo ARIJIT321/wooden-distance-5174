@@ -17,7 +17,7 @@ import com.arijit.exception.ProductException;
 import com.arijit.exception.SellerException;
 import com.arijit.utility.DBUtil;
 
-public class UserSeller implements SellerDao{
+public class SellerDaoImpl implements SellerDao{
 
 	private Seller user;
 	
@@ -27,7 +27,7 @@ public class UserSeller implements SellerDao{
 		try(Connection conn = DBUtil.provideConnection()) {
 			
 			
-			PreparedStatement state = conn.prepareStatement("insert into seller(seller_name , seller_username , seller_password) values (? , ? , ?)");
+			PreparedStatement state = conn.prepareStatement("insert into seller(sellerName , sellerUsername , sellerPassword) values (? , ? , ?)");
 			
 			state.setString(1, user.getName());
 			state.setString(2, user.getUsername());
@@ -63,7 +63,7 @@ public class UserSeller implements SellerDao{
 		
 		try(Connection conn = DBUtil.provideConnection()){
 			
-			PreparedStatement state = conn.prepareStatement("select * from seller where seller_username = ? AND seller_password = ?");
+			PreparedStatement state = conn.prepareStatement("select * from seller where sellerUsername = ? AND sellerUpassword = ?");
 			
 			state.setString(1, username);
 			state.setString(2, password);
@@ -120,13 +120,13 @@ public class UserSeller implements SellerDao{
 		
 		
 		
-		List<Product> list = new ArrayList<>();
+		List<Product> products = new ArrayList<>();
 		
 		
 		try(Connection conn = DBUtil.provideConnection()){
 			
 			
-			PreparedStatement state = conn.prepareStatement("select * from product_sold where seller_id = ? ");
+			PreparedStatement state = conn.prepareStatement("select * from product where status = true and sellerId = ?");
 			
 			state.setInt(1, this.user.getId());
 			
@@ -134,15 +134,22 @@ public class UserSeller implements SellerDao{
 			
 			
 			boolean flag = false;
-			
+			Boolean st = res.getBoolean("status");
 			
 			while(res.next()) {
 				
 				flag = true;
+				int i = res.getInt("ProId");
+				String n = res.getString("proName");
+				int si = res.getInt("sellerId");
+				int p = res.getInt("price");
+				int q = res.getInt("quantity");
+				Boolean s = res.getBoolean("status");
+				String c = res.getString("category");
 				
-				Product p = new Product(res.getInt("product_id"), res.getInt("base_price"), res.getInt("quantity_sold") ,res.getString("product_name"), "Sold", res.getString("category"));
 				
-				list.add(p);
+				
+				products.add(new Product(i,n,si,p, q ,s, c));
 				
 			}
 			
@@ -161,7 +168,7 @@ public class UserSeller implements SellerDao{
 		
 		
 		
-		return list;
+		return products;
 	}
 
 	@Override
@@ -185,15 +192,12 @@ public class UserSeller implements SellerDao{
 		try(Connection conn = DBUtil.provideConnection()) {
 			
 			
-			PreparedStatement del = conn.prepareStatement("delete from products_seller where product_id = ?");
-			PreparedStatement state = conn.prepareStatement("delete from products where product_id = ?");
+			PreparedStatement ps = conn.prepareStatement("delete from products where ProId = ?");
 			
-			del.setInt(1, product_id);
-			state.setInt(1, product_id);
+			ps.setInt(1, product_id);
 			
-			del.executeUpdate();
 			
-			if(!(state.executeUpdate() > 0)) {
+			if(!(ps.executeUpdate() > 0)) {
 				
 				System.out.println("Unable to delete the product");
 			}
@@ -240,13 +244,14 @@ public class UserSeller implements SellerDao{
 				
 				try {
 
-					PreparedStatement state = conn.prepareStatement("insert into products (product_name , base_price , status , category , quantity , seller_id) values(? , ? , ? , ? , ? , ?)");
+					PreparedStatement state = conn.prepareStatement("insert into product (proName,sellerId,price , quantity, status , category ) values(? , ? , ? , ? , ? , ?)");
 					state.setString(1 , s.getName());
-					state.setInt(2 , s.getPrice());
-					state.setString(3 , "N");
-					state.setString(4 , s.getCategory());
-					state.setInt(5 , s.getQuantity());
-					state.setInt(6, user.getId());
+					state.setInt(2, user.getId());
+					state.setInt(3 , s.getPrice());
+					state.setInt(4 , s.getQuantity());
+					state.setBoolean(0, false);
+					state.setString(6 , s.getCategory());
+					
 					
 					
 					int k = state.executeUpdate();
@@ -288,14 +293,13 @@ public class UserSeller implements SellerDao{
 		try(Connection conn = DBUtil.provideConnection()) {
 			
 			
-			PreparedStatement state = conn.prepareStatement("insert into products (product_name , base_price , status , category , quantity , seller_id) values(? , ? , ? , ? , ? , ?)");
+			PreparedStatement state = conn.prepareStatement("insert into product (proName ,sellerId,price , quantity, status , category ) values(? , ? , ? , ? , ? , ?)");
 			state.setString(1 , s.getName());
-			state.setInt(2 , s.getPrice());
-			state.setString(3 , "N");
-			state.setString(4 , s.getCategory());
-			state.setInt(5 , s.getQuantity());
-			state.setInt(6 , user.getId());
-			
+			state.setInt(2, user.getId());
+			state.setInt(3 , s.getPrice());
+			state.setInt(4 , s.getQuantity());
+			state.setBoolean(0, false);
+			state.setString(6 , s.getCategory());
 			
 			int k = state.executeUpdate();
 			
@@ -339,7 +343,7 @@ public class UserSeller implements SellerDao{
 			
 			case 1: {
 				
-				PreparedStatement update = conn.prepareStatement("update products set product_name = ? where product_id = ?");
+				PreparedStatement update = conn.prepareStatement("update product set proName = ? where ProId = ?");
 				
 				update.setString(1, sc.nextLine());
 				update.setInt(2, product_id);
@@ -366,7 +370,7 @@ public class UserSeller implements SellerDao{
 			case 2: {
 				
 				
-				PreparedStatement update = conn.prepareStatement("update products set product_price = ? where product_id = ?");
+				PreparedStatement update = conn.prepareStatement("update product set price = ? where ProId = ?");
 				
 				update.setInt(1, sc.nextInt());
 				update.setInt(2, product_id);
@@ -393,7 +397,7 @@ public class UserSeller implements SellerDao{
 			case 3 : {
 				
 				
-				PreparedStatement update = conn.prepareStatement("update products set quantity = ? where product_id = ?");
+				PreparedStatement update = conn.prepareStatement("update product set quantity = ? where ProId = ?");
 				
 				update.setInt(1, sc.nextInt());
 				update.setInt(2, product_id);
@@ -418,7 +422,7 @@ public class UserSeller implements SellerDao{
 			case 4: {
 				
 				
-				PreparedStatement update = conn.prepareStatement("update products set category = ? where product_id = ?");
+				PreparedStatement update = conn.prepareStatement("update products set category = ? where ProId = ?");
 				
 				update.setString(1, sc.nextLine());
 				update.setInt(2, product_id);
@@ -518,13 +522,13 @@ public class UserSeller implements SellerDao{
 		
 		
 		
-		List<Product> list = new ArrayList<>();
+		List<Product> products = new ArrayList<>();
 		
 		
 		try(Connection conn = DBUtil.provideConnection()){
 			
 			
-			PreparedStatement state = conn.prepareStatement("select * from products where seller_id = ?");
+			PreparedStatement state = conn.prepareStatement("select * from products where sellerId = ?");
 			
 			state.setInt(1, this.user.getId());
 			
@@ -538,9 +542,18 @@ public class UserSeller implements SellerDao{
 				
 				flag = true;
 				
-				Product p = new Product(res.getInt("product_id"), res.getInt("base_price"), res.getInt("quantity") ,res.getString("product_name"), res.getString("status"), res.getString("category"));
+				int i = res.getInt("ProId");
+				String n = res.getString("proName");
+				int si = res.getInt("sellerId");
+				int p = res.getInt("price");
+				int q = res.getInt("quantity");
+				Boolean s = res.getBoolean("status");
+				String c = res.getString("category");
 				
-				list.add(p);
+				
+				
+				products.add(new Product(i,n,si,p, q ,s, c));
+				
 				
 			}
 			
@@ -558,7 +571,7 @@ public class UserSeller implements SellerDao{
 		
 		
 		
-		return list;
+		return products;
 	}
 	
 	

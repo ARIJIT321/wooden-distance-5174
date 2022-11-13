@@ -17,7 +17,7 @@ import com.arijit.bean.Seller;
 import com.arijit.dao.AdminDao;
 import com.arijit.utility.DBUtil;
 
-public class Administrator implements AdminDao{
+public class AdminDaoImpl implements AdminDao{
 	
 	private Admin admin;
 	
@@ -40,7 +40,7 @@ public class Administrator implements AdminDao{
 			
 			if(res.next()) {
 				
-				user = new Admin(true,res.getInt("Admin_id"), res.getString("Admin_name"), res.getString("Admin_username"), res.getString("Admin_password"));
+				user = new Admin(res.getInt("Admin_id"), res.getString("Admin_name"), res.getString("Admin_username"), res.getString("Admin_password"));
 				this.admin = user;
 				
 				System.out.println("Log in successfully !" );
@@ -92,23 +92,19 @@ public class Administrator implements AdminDao{
 			while(res.next()) {
 				
 				
-				int id = res.getInt("product_id");
-				String n = res.getString("product_name");
-				int p = res.getInt("base_price");
-				String s = res.getString("status");
-				int  q = res.getInt("quantity");
+				int i = res.getInt("ProId");
+				String n = res.getString("proName");
+				int si = res.getInt("sellerId");
+				int p = res.getInt("price");
+				int q = res.getInt("quantity");
+				Boolean s = res.getBoolean("status");
 				String c = res.getString("category");
-				Product pro = new Product();
-				
-				pro.setId(id);
-				pro.setName(n);
-				pro.setPrice(p);
-				pro.setStatus(s);
-				pro.setQuantity(q);
-				pro.setCategory(c);
 				
 				
-				products.add(pro);
+				
+				products.add(new Product(i,n,si,p, q ,s, c));
+				
+				
 			}
 			
 			

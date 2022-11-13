@@ -4,43 +4,26 @@ package com.arijit.bean;
 public class Product {
 	
 	private int id;
-	private int price;
 	private String name;
-	private String status;
-	private String category;
+	private int sellerId;
+	private int price;
 	private int quantity;
+	private boolean status;
+	private String category;
 	
-	
-	public Product(int id, int price, int qun, String name, String status, String category) {
+	public Product() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Product(int id, String name, int sellerId, int price, int quantity, boolean status, String category) {
 		super();
 		this.id = id;
-		this.price = price;
 		this.name = name;
-		this.status = status;
-		this.category = category;
-		this.quantity = qun;
-	}
-
-	public Product() {
-		
-		
-	}
-	
-	public int getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(int quantity) {
+		this.sellerId = sellerId;
+		this.price = price;
 		this.quantity = quantity;
-	}
-
-	
-	
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
+		this.status = status;
 		this.category = category;
 	}
 
@@ -52,14 +35,6 @@ public class Product {
 		this.id = id;
 	}
 
-	public int getPrice() {
-		return price;
-	}
-
-	public void setPrice(int price) {
-		this.price = price;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -68,20 +43,51 @@ public class Product {
 		this.name = name;
 	}
 
-	public String getStatus() {
+	public int getSellerId() {
+		return sellerId;
+	}
+
+	public void setSellerId(int sellerId) {
+		this.sellerId = sellerId;
+	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public boolean isStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(boolean status) {
 		this.status = status;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	@Override
 	public String toString() {
-		return "Product [id=" + id + ", price=" + price + ", name=" + name + ", status=" + status + ", category="
-				+ category + ", quantity=" + quantity + "]";
+		return "Product [id=" + id + ", name=" + name + ", sellerId=" + sellerId + ", price=" + price + ", quantity="
+				+ quantity + ", status=" + status + ", category=" + category + "]";
 	}
-
 	
 	
 	

@@ -2,20 +2,19 @@ package com.arijit.usecases;
 
 
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Scanner;
 
 import com.arijit.bean.Product;
 import com.arijit.bean.Seller;
-import com.arijit.daoImp.UserSeller;
+import com.arijit.daoImp.SellerDaoImpl;
 
 
-public class SellerAccess {
+public class SellerUseCases {
 	
 	
 	private static Seller user;
-	private static UserSeller object;
+	private static SellerDaoImpl object;
 	static Scanner sc = new Scanner(System.in);
 	private static List<Product> list = new ArrayList<>();
 	
@@ -65,7 +64,7 @@ public class SellerAccess {
 				
 				String password = sc.nextLine();
 				
-				object = new UserSeller();
+				object = new SellerDaoImpl();
 				
 				Seller b1 = new Seller();
 				b1.setName(name);
@@ -93,7 +92,7 @@ public class SellerAccess {
 				
 				System.out.println("***********************");
 				
-				object = new UserSeller();
+				object = new SellerDaoImpl();
 				
 				
 				user = object.loginAsSeller(username, password);
@@ -230,7 +229,7 @@ public class SellerAccess {
 				
 				System.out.println("***********************");
 				
-				object = new UserSeller();
+				object = new SellerDaoImpl();
 				
 				
 				user = object.loginAsSeller(username, password);
@@ -362,7 +361,7 @@ public class SellerAccess {
 						System.out.println("Product Price    : " + s.getPrice());
 						System.out.println("Product Category : " + s.getCategory());
 						System.out.println("Product Quantity : " + s.getQuantity());
-						System.out.println("Product Status   : " + s.getStatus());	
+						System.out.println("Product Status   : " + s.isStatus());	
 						
 						System.out.println("***********************");	
 				
@@ -489,7 +488,7 @@ public class SellerAccess {
 				System.out.println("Product Price    : " + s.getPrice());
 				System.out.println("Product Category : " + s.getCategory());
 				System.out.println("Product Quantity : " + s.getQuantity());
-				System.out.println("Product Status   : " + s.getStatus());	
+				System.out.println("Product Status   : " + s.isStatus());	
 				
 				System.out.println("***********************");	
 		
@@ -528,7 +527,7 @@ public class SellerAccess {
 				System.out.println("Product Price    : " + s.getPrice());
 				System.out.println("Product Category : " + s.getCategory());
 				System.out.println("Product Quantity : " + s.getQuantity());
-				System.out.println("Product Status   : " + s.getStatus());	
+				System.out.println("Product Status   : " + s.isStatus());	
 				
 				System.out.println("***********************");	
 		
