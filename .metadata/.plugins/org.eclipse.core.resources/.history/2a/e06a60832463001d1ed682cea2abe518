@@ -1,0 +1,7 @@
+package com.arijit.dao;
+
+public interface ProductDao {
+
+	
+	
+}

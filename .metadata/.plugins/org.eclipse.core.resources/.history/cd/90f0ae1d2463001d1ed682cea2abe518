@@ -1,0 +1,5 @@
+package com.arijit.exceptions;
+
+public class SellerException {
+
+}
