@@ -15,6 +15,10 @@ import com.arijit.bean.Buyer;
 import com.arijit.bean.Product;
 import com.arijit.bean.Seller;
 import com.arijit.dao.AdminDao;
+import com.arijit.exception.AdminException;
+import com.arijit.exception.BuyerException;
+import com.arijit.exception.ProductException;
+import com.arijit.exception.SellerException;
 import com.arijit.utility.DBUtil;
 
 public class AdminDaoImpl implements AdminDao{
@@ -22,13 +26,13 @@ public class AdminDaoImpl implements AdminDao{
 	private Admin admin;
 	
 	@Override
-	public Admin adminLogIn(String username , String password) {
+	public Admin adminLogIn(String username , String password) throws AdminException{
 		
 		Admin user = null;
 		
 		try(Connection conn = DBUtil.provideConnection()){
 				
-			PreparedStatement state = conn.prepareStatement("select * from admin where username = ? AND password = ?");
+			PreparedStatement state = conn.prepareStatement("select * from admin where adminusername = ? AND adminpassword = ?");
 			
 			
 			state.setString(1, username);
@@ -40,7 +44,7 @@ public class AdminDaoImpl implements AdminDao{
 			
 			if(res.next()) {
 				
-				user = new Admin(res.getInt("Admin_id"), res.getString("Admin_name"), res.getString("Admin_username"), res.getString("Admin_password"));
+				user = new Admin(res.getInt("adminId"), res.getString("adminName"), res.getString("AdminUsername"), res.getString("AdminPassword"));
 				this.admin = user;
 				
 				System.out.println("Log in successfully !" );
@@ -67,7 +71,7 @@ public class AdminDaoImpl implements AdminDao{
 	}
 
 	@Override
-	public List<Product> viewProductsDetails() {
+	public List<Product> viewProductsDetails() throws ProductException{
 		
 		
 		
@@ -126,7 +130,7 @@ public class AdminDaoImpl implements AdminDao{
 	}
 
 	@Override
-	public List<Buyer> viewRegisteredBuyers() {
+	public List<Buyer> viewRegisteredBuyers() throws BuyerException{
 		
 		if(this.admin == null) {
 			
@@ -149,10 +153,10 @@ public class AdminDaoImpl implements AdminDao{
 			while(res.next()) {
 				
 				
-				int id = res.getInt("buyer_id");
-				String n = res.getString("buyer_name");
-				String s = res.getString("buyer_username");
-				String p = res.getString("buyer_password");
+				int id = res.getInt("buyerId");
+				String n = res.getString("buyerName");
+				String s = res.getString("buyerUsername");
+				String p = res.getString("buyerPassword");
 				
 				users.add(new Buyer(id, n, s, p));				
 			}
@@ -176,7 +180,7 @@ public class AdminDaoImpl implements AdminDao{
 	}
 
 	@Override
-	public List<Seller> viewRegisterdSellers() {
+	public List<Seller> viewRegisterdSellers() throws SellerException{
 		
 		if(this.admin == null) {
 			
@@ -199,10 +203,10 @@ public class AdminDaoImpl implements AdminDao{
 			while(res.next()) {
 				
 				
-				int id = res.getInt("seller_id");
-				String n = res.getString("seller_name");
-				String s = res.getString("seller_username");
-				String p = res.getString("seller_password");
+				int id = res.getInt("sellerId");
+				String n = res.getString("sellerName");
+				String s = res.getString("sellerUsername");
+				String p = res.getString("sellerPassword");
 				
 				users.add(new Seller(id, n, s, p));				
 			}
@@ -249,7 +253,7 @@ public class AdminDaoImpl implements AdminDao{
 			
 			
 			
-			PreparedStatement state =  conn.prepareStatement("select * from dailysales where sale_date = ?");
+			PreparedStatement state =  conn.prepareStatement("select * from SoldProduct where date = ?");
 			
 
 			LocalDate date = LocalDate.now();
@@ -266,7 +270,7 @@ public class AdminDaoImpl implements AdminDao{
 			
 			while(res.next() ) {
 				
-				total += res.getInt("total_sales");
+				total += res.getInt("price");
 			}
 			
 			

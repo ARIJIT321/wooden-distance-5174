@@ -5,6 +5,10 @@ import java.util.Scanner;
 
 import com.arijit.bean.Admin;
 import com.arijit.daoImp.AdminDaoImpl;
+import com.arijit.exception.AdminException;
+import com.arijit.exception.BuyerException;
+import com.arijit.exception.ProductException;
+import com.arijit.exception.SellerException;
 
 public class AdminUseCases {
 	
@@ -52,7 +56,12 @@ public class AdminUseCases {
 				object = new AdminDaoImpl();
 				
 				
-				user = object.adminLogIn(username, password);
+				try {
+					user = object.adminLogIn(username, password);
+				} catch (AdminException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				if(user == null) {
 					
@@ -144,17 +153,22 @@ public class AdminUseCases {
 		switch (input) {
 			case 1 : {
 				
-				object.viewProductsDetails().forEach( s -> {
-					
-					System.out.println("Product ID       : " + s.getId());
-					System.out.println("Product Name     : " + s.getName());
-					System.out.println("Product Price    : " + s.getPrice());
-					System.out.println("Product Category : " + s.getCategory());
-					System.out.println("Product Quantity : " + s.getQuantity());
-					System.out.println("Product Status   : " + s.isStatus());	
-					
-					System.out.println("*************************");
-				});
+				try {
+					object.viewProductsDetails().forEach( s -> {
+						
+						System.out.println("Product ID       : " + s.getId());
+						System.out.println("Product Name     : " + s.getName());
+						System.out.println("Product Price    : " + s.getPrice());
+						System.out.println("Product Category : " + s.getCategory());
+						System.out.println("Product Quantity : " + s.getQuantity());
+						System.out.println("Product Status   : " + s.isStatus());	
+						
+						System.out.println("*************************");
+					});
+				} catch (ProductException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				run1();
 			}
@@ -163,17 +177,22 @@ public class AdminUseCases {
 			case 2 : {
 				
 				
-				object.viewRegisteredBuyers().forEach(s -> {
-					
-					
-					System.out.println("Buyer ID       : " + s.getId());
-					System.out.println("Buyer Name     : " + s.getName());
-					System.out.println("Buyer Username : " + s.getUsername());
-					System.out.println("Buyer Password : " + s.getPassword());
-					
-					System.out.println("*************************");
-					
-				});
+				try {
+					object.viewRegisteredBuyers().forEach(s -> {
+						
+						
+						System.out.println("Buyer ID       : " + s.getId());
+						System.out.println("Buyer Name     : " + s.getName());
+						System.out.println("Buyer Username : " + s.getUsername());
+						System.out.println("Buyer Password : " + s.getPassword());
+						
+						System.out.println("*************************");
+						
+					});
+				} catch (BuyerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				run1();
 			}
@@ -181,17 +200,22 @@ public class AdminUseCases {
 			
 			case 3 : {
 				
-				object.viewRegisterdSellers().forEach(s -> {
-					
-					
-					System.out.println("Seller ID       : " + s.getId());
-					System.out.println("Selller Name    : " + s.getName());
-					System.out.println("Seller Username : " + s.getUsername());
-					System.out.println("Seller Password : " + s.getPassword());
-					
-					System.out.println("******************************************");
-					
-				});
+				try {
+					object.viewRegisterdSellers().forEach(s -> {
+						
+						
+						System.out.println("Seller ID       : " + s.getId());
+						System.out.println("Selller Name    : " + s.getName());
+						System.out.println("Seller Username : " + s.getUsername());
+						System.out.println("Seller Password : " + s.getPassword());
+						
+						System.out.println("******************************************");
+						
+					});
+				} catch (SellerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				run1();
 				

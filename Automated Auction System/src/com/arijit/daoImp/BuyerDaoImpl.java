@@ -25,13 +25,13 @@ public class BuyerDaoImpl implements BuyerDao{
 	private int count = 0;
 	
 	@Override
-	public void registerAsBuyer(Buyer user) {
+	public void registerAsBuyer(Buyer user) throws BuyerException{
 		
 		
 		try(Connection conn = DBUtil.provideConnection()) {
 			
 			
-			PreparedStatement state = conn.prepareStatement("insert into buyers(buyerName , buyerUsername , buyerPassword) values (? , ? , ?)");
+			PreparedStatement state = conn.prepareStatement("insert into buyer(buyerName , buyerUsername , buyerPassword) values (? , ? , ?)");
 			
 			state.setString(1, user.getName());
 			state.setString(2, user.getUsername());
@@ -49,27 +49,23 @@ public class BuyerDaoImpl implements BuyerDao{
 		}
 		catch(SQLException e) {
 			
-			System.out.println(e.getMessage());
+			throw new BuyerException(e.getMessage());
 			
 		} 
-		catch (BuyerException e) {
-			
-			System.out.println(e.getMessage());
-		}
 		
 	}
 	
 	
 
 	@Override
-	public Buyer loginAsBuyer(String username, String password) {
+	public Buyer loginAsBuyer(String username, String password) throws BuyerException{
 		
 		Buyer user = null;
 		
 		
 		try(Connection conn = DBUtil.provideConnection()){
 			
-			PreparedStatement state = conn.prepareStatement("select * from buyers where buyerUsername = ? AND buyerPassword = ?");
+			PreparedStatement state = conn.prepareStatement("select * from buyer where buyerUsername = ? AND buyerPassword = ?");
 			
 			state.setString(1, username);
 			state.setString(2, password);
@@ -96,19 +92,16 @@ public class BuyerDaoImpl implements BuyerDao{
 		}
 		catch(SQLException e) {
 			
-			System.out.println("ERROR : unable to connect with server");
+			throw new BuyerException(e.getMessage());
 			
 		} 
-		catch (BuyerException e) {
-			
-			System.out.println(e.getMessage());
-		}
+		
 		
 		return user;
 	}
 
 	@Override
-	public List<Product> viewByCategory(String cate) {
+	public List<Product> viewByCategory(String cate) throws ProductException{
 		
 		List<Product> products = new ArrayList<>();
 		
@@ -146,18 +139,15 @@ public class BuyerDaoImpl implements BuyerDao{
 		}
 		catch(SQLException e) {
 			
-			System.out.println(e.getMessage());
+			throw new ProductException(e.getMessage());
 		} 
-		catch (ProductException e) {
-			
-			System.out.println(e.getMessage());
-		}
+		
 		
 		return products;
 	}
 
 	@Override
-	public void buyProduct(int ProId)  {
+	public void buyProduct(int ProId) throws ProductException {
 		
 		try {
 			
@@ -183,7 +173,7 @@ public class BuyerDaoImpl implements BuyerDao{
 				int qun = sc.nextInt();
 				sc.nextLine();
 				
-				PreparedStatement state	= conn.prepareStatement("select * from products where ProId = ?");
+				PreparedStatement state	= conn.prepareStatement("select * from product where ProId = ?");
 				
 				state.setInt(1, ProId);
 				
@@ -231,15 +221,16 @@ public class BuyerDaoImpl implements BuyerDao{
 								insertIntoSales.setInt(1, bid);
 								insertIntoSales.setInt(2, sid);
 								insertIntoSales.setString(3, res.getString("proName"));
-								insertIntoSales.setInt(4, (res.getInt("base_price") * qun));								LocalDate date = LocalDate.now();
+								insertIntoSales.setInt(4, (res.getInt("price") * qun));								
 								insertIntoSales.setInt(5,  qun);
 								insertIntoSales.setString(6, res.getString("category"));
-								insertIntoSales.setDate(2, Date.valueOf(date));
+								LocalDate date = LocalDate.now();
+								insertIntoSales.setDate(7, Date.valueOf(date));
 								
 								insertIntoSales.executeUpdate();
 								
 								
-								PreparedStatement update = conn.prepareStatement("update product set status = true, quantity = 0 where product_id = ? AND quantity = ?");
+								PreparedStatement update = conn.prepareStatement("update product set status = true, quantity = 0 where proId = ? AND quantity = ?");
 								
 								
 								update.setInt(1, ProId);
@@ -261,7 +252,7 @@ public class BuyerDaoImpl implements BuyerDao{
 						else {
 							
 							
-							PreparedStatement getId = conn.prepareStatement("select * from products where product_id = ?");
+							PreparedStatement getId = conn.prepareStatement("select * from product where proIid = ?");
 							getId.setInt(1, ProId);
 							
 							ResultSet s = getId.executeQuery();
@@ -277,10 +268,11 @@ public class BuyerDaoImpl implements BuyerDao{
 								insertIntoSales.setInt(1, bid);
 								insertIntoSales.setInt(2, sid);
 								insertIntoSales.setString(3, res.getString("proName"));
-								insertIntoSales.setInt(4, (res.getInt("base_price") * qun));								LocalDate date = LocalDate.now();
+								insertIntoSales.setInt(4, (res.getInt("price") * qun));								
 								insertIntoSales.setInt(5,  qun);
 								insertIntoSales.setString(6, res.getString("category"));
-								insertIntoSales.setDate(2, Date.valueOf(date));
+								LocalDate date = LocalDate.now();
+								insertIntoSales.setDate(7, Date.valueOf(date));
 								
 								insertIntoSales.executeUpdate();
 								
@@ -317,17 +309,14 @@ public class BuyerDaoImpl implements BuyerDao{
 		}
 		catch(SQLException e) {
 			
-			System.out.println(e.getMessage());
+			throw new ProductException(e.getMessage());
 		} 
-		catch (ProductException e) {
-
-			System.out.println(e.getMessage());
-		}
+		
 		
 	}
 
 	@Override
-	public List<Buyer> viewAllBuyers() {
+	public List<Buyer> viewAllBuyers() throws BuyerException{
 		
 		
 		List<Buyer> buyers = new ArrayList<>();
@@ -335,7 +324,7 @@ public class BuyerDaoImpl implements BuyerDao{
 		
 		try(Connection conn = DBUtil.provideConnection()) {
 			
-			PreparedStatement state = conn.prepareStatement("select * from buyers");
+			PreparedStatement state = conn.prepareStatement("select * from buyer");
 			
 			ResultSet res = state.executeQuery();
 			
@@ -357,12 +346,9 @@ public class BuyerDaoImpl implements BuyerDao{
 		} 
 		catch (SQLException e) {
 			
-			System.out.println(e.getMessage());
+			throw new BuyerException(e.getMessage());
 		} 
-		catch (BuyerException e) {
-			
-			System.out.println(e.getMessage());
-		}
+		
 		
 		return buyers;
 	}

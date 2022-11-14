@@ -8,6 +8,8 @@ import java.util.Scanner;
 import com.arijit.bean.Product;
 import com.arijit.bean.Seller;
 import com.arijit.daoImp.SellerDaoImpl;
+import com.arijit.exception.ProductException;
+import com.arijit.exception.SellerException;
 
 
 public class SellerUseCases {
@@ -72,10 +74,20 @@ public class SellerUseCases {
 				b1.setPassword(password);
 				
 				
-				object.registerAsSeller(b1);
+				try {
+					object.registerAsSeller(b1);
+				} catch (SellerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				
-				run1();
+				try {
+					run1();
+				} catch (SellerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			break;
 			
@@ -95,7 +107,12 @@ public class SellerUseCases {
 				object = new SellerDaoImpl();
 				
 				
-				user = object.loginAsSeller(username, password);
+				try {
+					user = object.loginAsSeller(username, password);
+				} catch (SellerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				if(user == null) {
 					
@@ -104,7 +121,12 @@ public class SellerUseCases {
 				}
 				else {
 					
-					run1();
+					try {
+						run1();
+					} catch (SellerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}	
 				
 			}
@@ -183,7 +205,7 @@ public class SellerUseCases {
 	}
 	
 	
-	public static void run1() {
+	public static void run1() throws SellerException {
 		
 		System.out.println("********************************************");
 		System.out.println("To log in with username/password Enter 1 \r\n"
@@ -296,7 +318,12 @@ public class SellerUseCases {
 					
 					
 					
-					object.addProduct(temp);
+					try {
+						object.addProduct(temp);
+					} catch (ProductException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 					run1();
 				}
@@ -353,19 +380,26 @@ public class SellerUseCases {
 					
 					
 					
-					object.viewSoldProducts().forEach(s -> {
-						
-						
-						System.out.println("Product ID       : " + s.getId());
-						System.out.println("Product Name     : " + s.getName());
-						System.out.println("Product Price    : " + s.getPrice());
-						System.out.println("Product Category : " + s.getCategory());
-						System.out.println("Product Quantity : " + s.getQuantity());
-						System.out.println("Product Status   : " + s.isStatus());	
-						
-						System.out.println("***********************");	
-				
-					});
+					try {
+						object.viewSoldProducts().forEach(s -> {
+							
+							
+							System.out.println("Product ID       : " + s.getId());
+							System.out.println("Product Name     : " + s.getName());
+							System.out.println("Seller ID       : " + s.getSellerId());
+							System.out.println("Product Price    : " + s.getPrice());
+							System.out.println("Product Quantity : " + s.getQuantity());
+							System.out.println("Product Status   : " + s.isStatus());	
+							System.out.println("Product Category : " + s.getCategory());
+							
+							System.out.println("***********************");	
+
+						});
+					} catch (ProductException e) {
+						// TODO Auto-generated catch block
+						System.out.println(e.getMessage());
+						e.printStackTrace();
+					}
 					
 					run1();
 				}
@@ -446,18 +480,33 @@ public class SellerUseCases {
 			}
 			else {
 				
-				object.addProducts(list);
+				try {
+					object.addProducts(list);
+				} catch (ProductException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				list = new ArrayList<>();
 				
 			}
 			
-			run1();
+			try {
+				run1();
+			} catch (SellerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else if(input1 == 3){
 		
 			
-			run1();
+			try {
+				run1();
+			} catch (SellerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else {
 		
@@ -480,28 +529,43 @@ public class SellerUseCases {
 		
 		if(input == 0) {
 			
-			object.viewAllProdcuts().forEach(s -> {
-				
-				
-				System.out.println("Product ID       : " + s.getId());
-				System.out.println("Product Name     : " + s.getName());
-				System.out.println("Product Price    : " + s.getPrice());
-				System.out.println("Product Category : " + s.getCategory());
-				System.out.println("Product Quantity : " + s.getQuantity());
-				System.out.println("Product Status   : " + s.isStatus());	
-				
-				System.out.println("***********************");	
-		
-			});
+			try {
+				object.viewAllProdcuts().forEach(s -> {
+					
+					
+					System.out.println("Product ID       : " + s.getId());
+					System.out.println("Product Name     : " + s.getName());
+					System.out.println("Product Price    : " + s.getPrice());
+					System.out.println("Product Category : " + s.getCategory());
+					System.out.println("Product Quantity : " + s.getQuantity());
+					System.out.println("Product Status   : " + s.isStatus());	
+					
+					System.out.println("***********************");	
+
+				});
+			} catch (ProductException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			removeItem();
 		}
 		else {
 			
 			
-			object.removeItem(input);
+			try {
+				object.removeItem(input);
+			} catch (ProductException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
-			run1();
+			try {
+				run1();
+			} catch (SellerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 		}
 		
@@ -519,19 +583,24 @@ public class SellerUseCases {
 		
 		if(input == 0) {
 			
-			object.viewAllProdcuts().forEach(s -> {
-				
-				
-				System.out.println("Product ID       : " + s.getId());
-				System.out.println("Product Name     : " + s.getName());
-				System.out.println("Product Price    : " + s.getPrice());
-				System.out.println("Product Category : " + s.getCategory());
-				System.out.println("Product Quantity : " + s.getQuantity());
-				System.out.println("Product Status   : " + s.isStatus());	
-				
-				System.out.println("***********************");	
-		
-			});
+			try {
+				object.viewAllProdcuts().forEach(s -> {
+					
+					
+					System.out.println("Product ID       : " + s.getId());
+					System.out.println("Product Name     : " + s.getName());
+					System.out.println("Product Price    : " + s.getPrice());
+					System.out.println("Product Quantity : " + s.getQuantity());
+					System.out.println("Product Status   : " + s.isStatus());	
+					System.out.println("Product Category : " + s.getCategory());
+					
+					System.out.println("***********************");	
+
+				});
+			} catch (ProductException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			updateItem();
 		}
@@ -540,7 +609,12 @@ public class SellerUseCases {
 			
 			object.performUpdate(input);
 			
-			run1();
+			try {
+				run1();
+			} catch (SellerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 		}
 		

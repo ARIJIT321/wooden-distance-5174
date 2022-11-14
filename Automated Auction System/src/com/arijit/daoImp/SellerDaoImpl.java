@@ -22,7 +22,7 @@ public class SellerDaoImpl implements SellerDao{
 	private Seller user;
 	
 	@Override
-	public void registerAsSeller(Seller user) {
+	public void registerAsSeller(Seller user) throws SellerException{
 		
 		try(Connection conn = DBUtil.provideConnection()) {
 			
@@ -39,25 +39,22 @@ public class SellerDaoImpl implements SellerDao{
 			}
 			else {
 				
-				throw new BuyerException("User already registered!");
+				throw new SellerException("User already registered!");
 			}		
 			
 		}
 		catch(SQLException e) {
 			
-			System.out.println(e.getMessage());
+			throw new SellerException(e.getMessage());
 			
 		} 
-		catch (BuyerException e) {
-			
-			System.out.println(e.getMessage());
-		}
+		
 		
 		
 	}
 
 	@Override
-	public Seller loginAsSeller(String username, String password) {
+	public Seller loginAsSeller(String username, String password) throws SellerException{
 		
 		Seller sell = null;
 		
@@ -73,10 +70,10 @@ public class SellerDaoImpl implements SellerDao{
 			if(res.next()) {
 				sell = new Seller();
 				
-				sell.setId(res.getInt("seller_id"));
-				sell.setName(res.getString("seller_name"));
-				sell.setUsername(res.getString("seller_username"));
-				sell.setPassword(res.getString("seller_password"));
+				sell.setId(res.getInt("sellerId"));
+				sell.setName(res.getString("sellerName"));
+				sell.setUsername(res.getString("sellerUsername"));
+				sell.setPassword(res.getString("sellerPassword"));
 				
 				this.setUser(sell);
 				
@@ -90,19 +87,15 @@ public class SellerDaoImpl implements SellerDao{
 		}
 		catch(SQLException e) {
 			
-			System.out.println("ERROR : unable to connect with server");
+			throw new SellerException("LogIn Failed !");
 			
 		} 
-		catch (SellerException e) {
-			
-			System.out.println(e.getMessage());
-		}
 		
 		return sell;
 	}
 
 	@Override
-	public List<Product> viewSoldProducts()  {
+	public List<Product> viewSoldProducts() throws ProductException {
 		
 		try {
 			
@@ -172,7 +165,7 @@ public class SellerDaoImpl implements SellerDao{
 	}
 
 	@Override
-	public void removeItem(int product_id) {
+	public void removeItem(int product_id) throws ProductException{
 		
 		try {
 			
@@ -218,7 +211,7 @@ public class SellerDaoImpl implements SellerDao{
 	
 	
 	@Override
-	public void addProducts(List<Product> list) {
+	public void addProducts(List<Product> list) throws ProductException{
 		
 		try {
 			
@@ -273,7 +266,7 @@ public class SellerDaoImpl implements SellerDao{
 	}
 
 	@Override
-	public void addProduct(Product s) {
+	public void addProduct(Product s) throws ProductException{
 		
 		try {
 			
@@ -316,7 +309,7 @@ public class SellerDaoImpl implements SellerDao{
 	}
 
 	@Override
-	public void updateProduct(int product_id,int k) {
+	public void updateProduct(int product_id,int k) throws ProductException{
 		
 		try {
 			
@@ -499,12 +492,17 @@ public class SellerDaoImpl implements SellerDao{
 			return;
 		}
 		
-		this.updateProduct(product_id, k);
+		try {
+			this.updateProduct(product_id, k);
+		} catch (ProductException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
 	
-	public List<Product> viewAllProdcuts(){
+	public List<Product> viewAllProdcuts()throws ProductException{
 		
 		try {
 			

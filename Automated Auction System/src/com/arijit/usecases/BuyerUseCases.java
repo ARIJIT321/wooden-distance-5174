@@ -3,6 +3,8 @@ package com.arijit.usecases;
 import java.util.Scanner;
 import com.arijit.bean.Buyer;
 import com.arijit.daoImp.BuyerDaoImpl;
+import com.arijit.exception.BuyerException;
+import com.arijit.exception.ProductException;
 
 public class BuyerUseCases {
 	
@@ -61,7 +63,12 @@ public class BuyerUseCases {
 				b1.setPassword(password);
 				
 				
-				object.registerAsBuyer(b1);
+				try {
+					object.registerAsBuyer(b1);
+				} catch (BuyerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				
 				run1();
@@ -84,7 +91,12 @@ public class BuyerUseCases {
 				object = new BuyerDaoImpl();
 				
 				
-				user = object.loginAsBuyer(username, password);
+				try {
+					user = object.loginAsBuyer(username, password);
+				} catch (BuyerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				if(user == null) {
 					
@@ -190,7 +202,12 @@ public class BuyerUseCases {
 				object = new BuyerDaoImpl();
 				
 				
-				user = object.loginAsBuyer(username, password);
+				try {
+					user = object.loginAsBuyer(username, password);
+				} catch (BuyerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				if(user == null) {
 					
@@ -223,17 +240,22 @@ public class BuyerUseCases {
 					System.out.println("Enter product category to search : ");
 					String cate = sc.nextLine();
 					
-					object.viewByCategory(cate).forEach(s -> {
-						
-						System.out.println("Product ID       : " + s.getId());
-						System.out.println("Product Name     : " + s.getName());
-						System.out.println("Product Price    : " + s.getPrice());
-						System.out.println("Product Category : " + s.getCategory());
-						System.out.println("Product Quantity : " + s.getQuantity());
-						System.out.println("Product Status   : " + s.isStatus());	
-						
-						System.out.println("***********************");
-					});				
+					try {
+						object.viewByCategory(cate).forEach(s -> {
+							
+							System.out.println("Product ID       : " + s.getId());
+							System.out.println("Product Name     : " + s.getName());
+							System.out.println("Product Price    : " + s.getPrice());
+							System.out.println("Product Category : " + s.getCategory());
+							System.out.println("Product Quantity : " + s.getQuantity());
+							System.out.println("Product Status   : " + s.isStatus());	
+							
+							System.out.println("***********************");
+						});
+					} catch (ProductException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}				
 				
 					run1();
 				}
@@ -258,7 +280,12 @@ public class BuyerUseCases {
 					
 					int id = sc.nextInt();
 					
-					object.buyProduct(id);
+					try {
+						object.buyProduct(id);
+					} catch (ProductException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 					
 				}
@@ -279,16 +306,21 @@ public class BuyerUseCases {
 				else {
 					
 					
-					object.viewAllBuyers().forEach(s -> {
-						
-						
-						System.out.println("Buyer ID       : " + s.getId());
-						System.out.println("Buyer Name     : " + s.getName());
-						System.out.println("Buyer Username : " + s.getUsername());
-						
-						System.out.println("*************************");
-						
-					});
+					try {
+						object.viewAllBuyers().forEach(s -> {
+							
+							
+							System.out.println("Buyer ID       : " + s.getId());
+							System.out.println("Buyer Name     : " + s.getName());
+							System.out.println("Buyer Username : " + s.getUsername());
+							
+							System.out.println("*************************");
+							
+						});
+					} catch (BuyerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 					run1();
 				}
