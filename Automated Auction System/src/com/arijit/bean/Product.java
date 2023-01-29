@@ -12,12 +12,10 @@ public class Product {
 	private String category;
 	
 	public Product() {
-		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public Product(int id, String name, int sellerId, int price, int quantity, boolean status, String category) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.sellerId = sellerId;
